@@ -10,7 +10,7 @@ This part of McKinsey houses:
 
  - [QuantumBlack, AI by McKinsey](https://www.mckinsey.com/capabilities/quantumblack/how-we-help-clients), where we unlock the power of artificial intelligence (AI) to help organizations reinvent themselves from the ground up.
  - [McKinsey Technology](https://www.mckinsey.com/capabilities/mckinsey-digital/mckinsey-technology/overview), the home for our capabilities that help us partner with clients to modernize their technology stacks and accelerate impact using Cloud by McKinsey, Agile Delivery, Data Transformation and more
- - [Leap by McKinsey](https://www.mckinsey.com/capabilities/mckinsey-digital/mckinsey-technology/overview), where we work with established organizations to imagine, build, and scale new businesses
+ - [Leap by McKinsey](https://www.mckinsey.com/capabilities/mckinsey-digital/leap/overview), where we work with established organizations to imagine, build, and scale new businesses
 
 
 ## Our project ecosystem
