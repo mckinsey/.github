@@ -1,0 +1,61 @@
+issuer: https://token.actions.githubusercontent.com
+# PROD and DEV, not prod and test. The sibling policies for dts-ofg-scanner and
+# ep-assets-management use lowercase because those repositories have
+# environments named prod and test; dts-scheduled-jobs has PROD and DEV. GitHub
+# resolves environment names case-insensitively, so a job asking for "prod" here
+# lands in the existing PROD and the claim carries that name.
+subject_pattern: 'repo:McK-Internal/dts-scheduled-jobs:environment:(PROD|DEV)'
+
+permissions:
+  # Serves the GraphQL repository sweep: repositories, visibility, isArchived,
+  # isFork, pushedAt, and repositoryCustomPropertyValues. The last of those is
+  # confirmed rather than assumed: it returns values under metadata alone, which
+  # is why organization_custom_properties is absent below.
+  metadata: read
+
+  # Serves Repository.defaultBranchRef, and this job cannot read anything
+  # without it.
+  #
+  # This is not obvious and cost several live runs to find. defaultBranchRef
+  # returns a Ref, which GitHub treats as repository contents rather than
+  # metadata, so the field is refused without this permission even when only
+  # `name` is selected. Every measurement hangs off that Ref — both
+  # branchProtectionRule and rules are fields on it — so the whole sweep returns
+  # FORBIDDEN, and the refusal names neither the field nor the permission.
+  #
+  # The alternative is resolving branch patterns against branch names ourselves
+  # over REST, roughly 48,000 calls for McK-Internal against a 5,000/hour limit,
+  # and reimplementing the precedence GitHub already applies.
+  #
+  # The two sibling read-only audits in this same directory, dts-ofg-scanner and
+  # ep-assets-management, both already hold contents: read for the same reason.
+  contents: read
+
+  # Serves branchProtectionRules and defaultBranchRef.branchProtectionRule,
+  # classic branch protection. Confirmed working against a minted token: the
+  # REST protection endpoint answers "Branch not protected" rather than
+  # refusing, and branchProtectionRules returns a count.
+  #
+  # This reverses an earlier decision. The census was originally specified to
+  # read ruleset-derived rules only, and this file said administration: read was
+  # "deliberately" not requested. Sampling production McK-Internal showed that
+  # to be wrong. Across five 50-repository slices taken under different
+  # orderings, 124 of them live, classic protection governed 18 default branches
+  # and active branch rulesets governed 16. The two are comparable in size and
+  # the mix swings by slice: the newest repositories lean ruleset, the oldest
+  # lean classic. Reading either alone would miss roughly half the protection
+  # that exists, and miss it unevenly.
+  #
+  # The sibling dts-ofg-scanner policy in this same directory already holds this
+  # permission, and its comment records the exact failure being avoided: without
+  # it "that one field returns 'Resource not accessible by integration' while
+  # every other field succeeds, so the scan looks healthy and
+  # HAS_BRANCH_PROTECTION quietly reads false for every repository."
+  administration: read
+
+  # organization_custom_properties is deliberately absent, and its removal is
+  # the compensating half of the trade above. GraphQL serves the property values
+  # through repositoryCustomPropertyValues under metadata: read, so the org-level
+  # permission buys nothing this job cannot already get. Dropping it also retires
+  # the write grant left behind when DCTT-15 enforcement moved to
+  # dts-sre-scripts, which has its own identity.
