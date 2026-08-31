@@ -1,0 +1,22 @@
+# Lets the OFG scanner's repo leg read this organization. The leg mints one org-scoped
+# octo-sts token per org, so without this policy the org cannot be scanned at all: the
+# scanner exits at startup naming the org and the token variable, rather than reading it
+# as an organization with zero repositories.
+#
+# Repository permissions only. `members` is deliberately not requested, because it buys
+# nothing: organization.samlIdentityProvider is FORBIDDEN to an installation token even
+# with members: read granted — measured on McK-Playground and McK-Prototypes, not
+# assumed — so the scanner's user leg keeps its own OAuth token regardless.
+issuer: https://token.actions.githubusercontent.com
+subject_pattern: 'repo:McK-Internal/dts-ofg-scanner:environment:(prod|test)'
+
+permissions:
+  # defaultBranchRef.target — last commit oid, message, author
+  contents: read
+  # repositories, languages, topics, diskUsage, isArchived, visibility,
+  # repositoryCustomPropertyValues
+  metadata: read
+  # branchProtectionRules. Without it that one field returns "Resource not accessible
+  # by integration" while every other field succeeds, so the scan looks healthy and
+  # HAS_BRANCH_PROTECTION quietly reads false for every repository.
+  administration: read
