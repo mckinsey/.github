@@ -1,0 +1,7 @@
+issuer: https://token.actions.githubusercontent.com
+subject_pattern: 'repo:McK-Internal/ep-assets-management:environment:(prod|test)'
+
+permissions:
+  contents: read
+  metadata: read
+  pull_requests: read
