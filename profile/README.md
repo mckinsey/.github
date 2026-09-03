@@ -15,6 +15,8 @@ Here on the Open Source by McKinsey ecosystem, you'll find the following open-so
   - [Vizro](https://github.com/mckinsey/vizro) - a low-code toolkit for building high-quality data visualization apps. Use it to create customized dashboards in minutes without the need for advanced coding or design experience.
 
   - [Agentic runtime for Kubernetes (ARK)](https://github.com/mckinsey/agents-at-scale-ark) - a declarative, Kubernetes-native framework for building portable, scalable, and provider-agnostic agentic applications. By defining what agents should do rather than how they do it, Ark eliminates vendor lock-in and ensures your applications stay adaptable as AI evolves.
+  
+  - [Agents at Scale Marketplace](https://github.com/mckinsey/agents-at-scale-marketplace) - a curated collection of ready-to-deploy services, agents, MCP servers, executors, Helm charts, and DevSpace configurations for the Agents at Scale ecosystem.
 
   - [QuantumBlack Design System](https://github.com/mckinsey/quantumblack-design-system) - a shadcn-based component library that provides accessible components built with Base UI and Radix UI primitives, and styled with design tokens. Add them to your project as source files through the shadcn registry, not as an NPM package.
 
