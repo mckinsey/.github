@@ -1,0 +1,30 @@
+issuer: https://token.actions.githubusercontent.com
+# PROD and DEV, not prod and test: this repository's environments are named
+# PROD and DEV (see the sibling McK-Internal_dts-scheduled-jobs.sts.yaml
+# policy in this same directory, where this reasoning is spelled out in
+# full for the same repo). GitHub resolves environment names
+# case-insensitively.
+subject_pattern: 'repo:McK-Internal/dts-scheduled-jobs:environment:(PROD|DEV)'
+
+# This is a job-scoped identity, not an addition to the sibling
+# McK-Internal_dts-scheduled-jobs.sts.yaml policy already in this directory:
+# that one serves an unrelated repository/branch-protection sweep
+# (github/branch-protection-census) with its own permission set
+# (metadata/contents/administration, no pull_requests). Broadening it would
+# hand that job a permission it does not need and blur which job an audit
+# should credit for pull_requests read. Precedent for a job minting its own
+# suffixed identity instead of extending a shared one:
+# McK-Internal_dts-scheduled-jobs-product-id-backfill.sts.yaml.
+permissions:
+  # Serves github/pull-request-load's GraphQL walk: organization
+  # repositories (name, url, pushedAt) and each repository's pullRequests
+  # connection (state, timestamps, additions/deletions, reviews, commits,
+  # comments, labels).
+  contents: read
+  metadata: read
+  pull_requests: read
+  # Serves the same job's check-run child table (DCTT-231): GET
+  # /repos/{owner}/{repo}/commits/{sha}/check-runs for each pull request's
+  # head and merge-commit SHA only. The Checks API needs its own App
+  # permission — contents/pull_requests do not cover it.
+  checks: read
