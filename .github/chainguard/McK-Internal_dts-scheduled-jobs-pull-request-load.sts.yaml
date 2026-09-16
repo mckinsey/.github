@@ -23,3 +23,8 @@ permissions:
   contents: read
   metadata: read
   pull_requests: read
+  # Serves the same job's check-run child table (DCTT-231): GET
+  # /repos/{owner}/{repo}/commits/{sha}/check-runs for each pull request's
+  # head and merge-commit SHA only. The Checks API needs its own App
+  # permission — contents/pull_requests do not cover it.
+  checks: read
