@@ -1,0 +1,28 @@
+issuer: https://token.actions.githubusercontent.com
+subject_pattern: 'repo:McK-Internal/dts-scheduled-jobs:environment:(PROD|DEV)'
+
+permissions:
+  # Serves the repository sweep and organization.teams.
+  metadata: read
+
+  # Serves Team.repositories { edges { permission } } is metadata-level and
+  # would resolve without this, but Repository.collaborators { edges {
+  # permission } } does not: on a personal token holding only read:org that
+  # field was refused with INSUFFICIENT_SCOPES naming admin:org. Requested
+  # here anyway because administration: read is the fine-grained App
+  # permission a GitHub App uses for exactly this class of read, and it is
+  # what github-product-id-backfill's identical REST call
+  # (ListCollaborators affiliation=direct permission=admin) already runs
+  # under in production. Whether it also unlocks the GraphQL field for an
+  # App-minted token is the one thing this policy cannot prove before a real
+  # mint — see requirements.md, spike finding 2. If it does not, this job's
+  # own runtime fallback (internal/collector's GraphQL-then-REST design)
+  # covers the gap without needing a different permission.
+  administration: read
+
+  # Serves Team.members. Verified live via GET /orgs/{org}/installations
+  # against every Cloud registration in this identity's scope
+  # (pp-octo-sts-1/-2/-3): all three already grant members: read, so this
+  # policy is narrower than the App and mints the moment it merges. See
+  # requirements.md, spike finding 1.
+  members: read
